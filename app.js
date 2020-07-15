@@ -2,12 +2,13 @@ const config = require("./config");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const authMiddleware = require("./middleware/auth");
 
 const app = express();
 
 app.use(bodyParser.json());
 
-app.use("/quotes", require("./routes/quotes"));
+app.use("/quotes", authMiddleware, require("./routes/quotes"));
 app.use("/auth", require("./routes/auth"));
 
 app.get("/", (req, res) => res.send("Hi bich"));

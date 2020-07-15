@@ -5,7 +5,7 @@ router.post("/", (req, res) => {
 });
 
 router.get("/tea", (req, res) => {
-  res.send("<h1>IGOR</h1>");
+  res.send(`<h1>${req.user.username}</h1>`);
 });
 
 module.exports = router;
