@@ -2,6 +2,7 @@ const router = require("express").Router();
 const QuoteModel = require("../models/quote");
 const authMiddleware = require("../middleware/auth");
 
+// create new quote
 router.post("/", authMiddleware, async (req, res, next) => {
   try {
     const { author, text, ...extra } = req.body;
@@ -24,14 +25,24 @@ router.post("/", authMiddleware, async (req, res, next) => {
   }
 });
 
+// get all quotes
 router.get("/", async (req, res, next) => {
   const quotes = await QuoteModel.find();
-
   res.send(quotes);
 });
 
+// get quote by id
+router.get("/:id", async (req, res, next) => {
+  const quote = await QuoteModel.findById(req.params.id);
+  res.send(quote);
+});
+
+// like/unlike quote
 router.post("/:id/like", authMiddleware, async (req, res, next) => {
   const quote = await QuoteModel.findById(req.params.id);
+
+  if (!quote) res.sendStatus(404);
+
   const { user } = req;
   console.log(user.liked_quotes_ids);
 
@@ -51,6 +62,7 @@ router.post("/:id/like", authMiddleware, async (req, res, next) => {
   res.send({ likes: quote.likes });
 });
 
+// tea?
 router.get("/tea", (req, res) => {
   res.send(`<h1>${req.user.username}</h1>`);
 });
