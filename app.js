@@ -8,7 +8,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use("/quotes", authMiddleware, require("./routes/quotes"));
+app.use("/quotes", require("./routes/quotes"));
 app.use("/auth", require("./routes/auth"));
 
 app.get("/", (req, res) => res.send("Hi bich"));

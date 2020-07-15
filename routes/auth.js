@@ -21,7 +21,7 @@ router.post("/login", async (req, res, next) => {
 
   if (same) {
     const token = await signAsync({ _id: user._id }, config.secretKey, {
-      expiresIn: "1h",
+      expiresIn: "24h",
     });
 
     res.send({ token });
