@@ -8,9 +8,9 @@ router.get("/", async (req, res, next) => {
   res.send(users);
 });
 
-// get user by id
-router.get("/:id", async (req, res, next) => {
-  const user = await UserModel.findById(req.params.id);
+// get user by username
+router.get("/:username", async (req, res, next) => {
+  const user = await UserModel.findOne({ username: req.params.username });
   res.send(user);
 });
 

@@ -37,10 +37,18 @@ router.post("/login", async (req, res, next) => {
 router.post("/register", async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const user = new UserModel({ username, password });
+
+    var user = await UserModel.findOne({ username: req.body.username });
+    if (user) return res.status(403).send(`User ${username} already exists`);
+
+    user = new UserModel({ username, password });
     user.speak();
 
-    res.send(await user.save());
+    user = await user.save();
+    const token = await signAsync({ _id: user._id }, config.secretKey, {
+      expiresIn: "24h",
+    });
+    res.send({ token });
   } catch (err) {
     next(err);
   }

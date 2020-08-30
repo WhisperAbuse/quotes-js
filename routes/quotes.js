@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const QuoteModel = require("../models/quote");
 const authMiddleware = require("../middleware/auth");
+const UserModel = require("../models/user");
 
 // create new quote
 router.post("/", authMiddleware, async (req, res, next) => {
@@ -41,13 +42,17 @@ router.get("/:id", async (req, res, next) => {
 router.post("/:id/like", authMiddleware, async (req, res, next) => {
   const quote = await QuoteModel.findById(req.params.id);
 
-  if (!quote) res.sendStatus(404);
+  if (!quote) res.status(404).send("Quote not found");
 
-  const { user } = req;
+  const { username, toggle } = req.body;
+  const user = await UserModel.findOne({ username: username });
+  if (!user) return res.status(400).send("User not found");
+
+  console.log(user);
   console.log(user.liked_quotes_ids);
 
   const isLiked = user.liked_quotes_ids.includes(quote._id);
-  if (req.body.toggle) {
+  if (toggle) {
     if (isLiked) return res.status(400).send("Already liked");
     user.liked_quotes_ids.push(quote._id);
     quote.likes += 1;
@@ -59,7 +64,7 @@ router.post("/:id/like", authMiddleware, async (req, res, next) => {
   }
   await user.save();
   await quote.save();
-  res.send({ likes: quote.likes });
+  res.send({ likes: quote.likes, isLiked: isLiked });
 });
 
 // tea?
